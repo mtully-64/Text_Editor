@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.nio.Buffer;
 
 public class Function_File {
@@ -16,6 +17,8 @@ public class Function_File {
     public void newFile(){
         gui.textArea.setText("");
         gui.window.setTitle("New");
+        fileName = null;
+        fileAddress = null;
     }
 
     public void openFile(){
@@ -48,8 +51,39 @@ public class Function_File {
     }
 
     public void saveFile(){
-        FileDialog fd = new FileDialog(gui.window, "Save", FileDialog.SAVE);
-        fd.setVisible(true);
+        if(fileName == null){
+           saveAsFile();
+        } else {
+            try{
+                FileWriter fw = new FileWriter(fileAddress + fileName);
+                fw.write(gui.textArea.getText()); // Write text data to file
+                fw.close();
+            } catch (Exception e) {
+                System.out.println("Error");
+            }
+        }
     }
 
+    public void saveAsFile(){
+        FileDialog fd = new FileDialog(gui.window, "Save", FileDialog.SAVE);
+        fd.setVisible(true);
+
+        if(fd.getFile() != null){
+            fileName = fd.getFile();
+            fileAddress = fd.getDirectory();
+            gui.window.setTitle(fileName); // Set to the new file name
+        }
+
+        try{
+            FileWriter fw = new FileWriter(fileAddress + fileName);
+            fw.write(gui.textArea.getText()); // Write text data to file
+            fw.close();
+        } catch (Exception e){
+            System.out.println("Error");
+        }
+    }
+
+    public void exitFile(){
+        System.exit(0); // Clean shut down on program
+    }
 }
